@@ -18,6 +18,11 @@
 	--color-ok: #2E9E6B;
 	--color-subtext: #9A958C;
 	--color-search-bar-bg: #FAF9F7;
+	--color-checkbox: #D4D0C9;
+	--color-canvas-tag-bg: #FBEFE9;
+	--color-canvas-tag-fill: #D9692B;
+	--color-gradescope-tag-bg: #ECEFF6;
+	--color-gradescope-tag-fill: #4566C9;
 }
 
 @media (prefers-color-scheme: dark) {

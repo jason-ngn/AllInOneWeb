@@ -14,7 +14,7 @@ export default function AssignmentsViewItem({
 	return (
 		<div
 			onClick={onSelect}
-			className={`flex flex-row px-3 py-2 rounded-xl justify-between items-center w-full cursor-pointer ${active ? "bg-white" : "text-text-inactive"}`}
+			className={`flex flex-row px-3 py-2 rounded-xl justify-between items-center w-full cursor-pointer ${active ? "bg-white shadow-lg" : "text-text-inactive"}`}
 		>
 			<div>{name}</div>
 			<div className={overdue == true ? "text-overdue" : ""}>

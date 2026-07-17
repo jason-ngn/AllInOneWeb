@@ -3,7 +3,7 @@ import { useState } from "react";
 import AssignmentsViewItem from "@/components/AssignmentsListView/AssignmentsListViewItem";
 
 export default function AssignmentsViewList() {
-	const [activeIndex, setActiveIndex] = useState<number | null>(null);
+	const [activeIndex, setActiveIndex] = useState<number>(0);
 
 	const items = [
 		{ name: "All Assignments", numOfAssignments: 3 },
