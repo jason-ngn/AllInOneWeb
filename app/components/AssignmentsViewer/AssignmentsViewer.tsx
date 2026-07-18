@@ -24,6 +24,14 @@ export default function AssignmentsViewer({
 			name: "CS 111",
 			assigments: ["First", "Second", "Third"],
 		},
+		{
+			name: "CS 111",
+			assigments: ["First", "Second", "Third"],
+		},
+		{
+			name: "CS 111",
+			assigments: ["First", "Second", "Third"],
+		},
 	];
 
 	return (

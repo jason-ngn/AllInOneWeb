@@ -23,6 +23,14 @@
 	--color-canvas-tag-fill: #D9692B;
 	--color-gradescope-tag-bg: #ECEFF6;
 	--color-gradescope-tag-fill: #4566C9;
+	--color-submitted-tag-bg: #E8F3EC;
+	--color-submitted-tag-fill: #2E7D52;
+	--color-todo-tag-bg: #F1EFEA;
+	--color-todo-tag-fill: #6E6A62;
+	--color-missing-tag-bg: #FBEAE8;
+	--color-missing-tag-fill: #C0392B;
+	--color-timer-orange: #C9821B;
+	--color-timer-red: #D5443B;
 }
 
 @media (prefers-color-scheme: dark) {
