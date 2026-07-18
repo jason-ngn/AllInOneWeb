@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-export default function SearchBar() {
+export default function SearchBar({
+	onQueryChange,
+}: {
+	onQueryChange: Dispatch<SetStateAction<string>>;
+}) {
 	const [query, setQuery] = useState<string>("");
 
 	return (
@@ -11,7 +15,10 @@ export default function SearchBar() {
 			<input
 				type="text"
 				value={query}
-				onChange={(e) => setQuery(e.target.value)}
+				onChange={(e) => {
+					setQuery(e.target.value);
+					onQueryChange(e.target.value);
+				}}
 				placeholder="Search assignments..."
 				className="bg-transparent outline-none text-text-inactive w-full"
 			/>

@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export default function Checkbox() {
+export default function Checkbox({
+	completed = false,
+}: {
+	completed?: boolean;
+}) {
 	const [clicked, setClicked] = useState<boolean>(false);
 
 	return (
@@ -10,7 +14,7 @@ export default function Checkbox() {
 			<input
 				type="checkbox"
 				onClick={() => setClicked(!clicked)}
-				className={`cursor-pointer appearance-none p-3 border border-checkbox rounded-sm ${clicked ? "bg-ok" : ""}`}
+				className={`cursor-pointer appearance-none p-3 border border-checkbox rounded-sm ${completed ? "bg-ok" : clicked ? "bg-ok" : ""}`}
 			/>
 		</div>
 	);

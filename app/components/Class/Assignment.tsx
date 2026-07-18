@@ -7,31 +7,61 @@ import MissingTag from "@/components/Class/MissingTag";
 import GradedTag from "@/components/Class/GradedTag";
 import Timer from "@/components/Class/Timer";
 import ExternalLink from "@/components/Class/ExternalLink";
+import { Source } from "@/app/lib/types";
 
-export default function Assignment({ name }: { name: string }) {
+export default function Assignment({
+	name,
+	maxScore,
+	dueDate,
+	link,
+	source = Source.CANVAS,
+	submitted = false,
+	graded = false,
+}: {
+	name: string;
+	maxScore: number;
+	dueDate: Date;
+	link: string;
+	source?: `${Source}`;
+	submitted?: boolean;
+	graded?: boolean;
+}) {
 	return (
-		<div className="flex justify-between items-center">
-			<div className="flex gap-1 justify-center items-center">
-				<div className="p-2">
-					<Checkbox />
-				</div>
-				<div className="flex flex-col justify-center items-start gap-1">
-					<div className="font-semibold">Quiz 1</div>
-					<div className="flex justify-center items-center gap-2">
-						<CanvasTag />
-						<div className="text-text-inactive">20 pts</div>
-						<div>
-							<SubmittedTag />
+		<div className="relative flex justify-between items-center">
+			{(submitted || graded) && (
+				<div className="absolute -inset-x-4 top-1/2 h-px bg-current opacity-40 pointer-events-none z-10" />
+			)}
+			<div
+				className={`flex justify-between items-center w-full ${submitted || graded ? "opacity-50" : ""}`}
+			>
+				<div className="flex gap-1 justify-center items-center">
+					<div className="p-2">
+						<Checkbox completed={submitted || graded} />
+					</div>
+					<div className="flex flex-col justify-center items-start gap-1">
+						<div className="font-semibold">{name}</div>
+						<div className="flex justify-center items-center gap-2">
+							{source === Source.CANVAS ? <CanvasTag /> : <GradescopeTag />}
+							<div className="text-text-inactive">{maxScore} pts</div>
+							<div>
+								{graded ? (
+									<GradedTag />
+								) : submitted ? (
+									<SubmittedTag />
+								) : new Date() > dueDate ? (
+									<MissingTag />
+								) : (
+									<TodoTag />
+								)}
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div className="flex gap-2 justify-center items-center">
-				<div>
-					<Timer dueDate={new Date(2026, 6, 19, 23, 59, 59)} />
-				</div>
-				<div>
-					<ExternalLink link="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />
+				<div className="flex gap-2 justify-center items-center">
+					{!(submitted || graded) && <Timer dueDate={dueDate} />}
+					<div>
+						<ExternalLink link={link} />
+					</div>
 				</div>
 			</div>
 		</div>

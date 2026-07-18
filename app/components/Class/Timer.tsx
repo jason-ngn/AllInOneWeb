@@ -3,15 +3,12 @@
 import { useEffect, useState } from "react";
 
 export default function Timer({ dueDate }: { dueDate: Date }) {
-	const [timeLeft, setTimeLeft] = useState(
-		() => dueDate.getTime() - Date.now(),
-	);
+	const [timeLeft, setTimeLeft] = useState(() => dueDate.getTime() - Date.now());
 
 	useEffect(() => {
 		const id = setInterval(() => {
 			setTimeLeft(dueDate.getTime() - Date.now());
 		}, 1000);
-
 		return () => clearInterval(id);
 	}, [dueDate]);
 
@@ -23,7 +20,7 @@ export default function Timer({ dueDate }: { dueDate: Date }) {
 
 	if (timeLeft <= 0)
 		return (
-			<div className="text-timer-red">
+			<div suppressHydrationWarning className="text-timer-red">
 				Overdue by {days > 0 && `${days}d `}
 				{(days > 0 || hours > 0) && `${hours}h `}
 				{mins}m {secs}s
@@ -32,7 +29,7 @@ export default function Timer({ dueDate }: { dueDate: Date }) {
 	if (days === 0 && hours < 12) {
 		return (
 			<div>
-				<div className="text-timer-red">
+				<div suppressHydrationWarning className="text-timer-red">
 					{days > 0 && `${days}d `}
 					{(days > 0 || hours > 0) && `${hours}h `}
 					{mins}m {secs}s
@@ -42,7 +39,7 @@ export default function Timer({ dueDate }: { dueDate: Date }) {
 	} else if (days === 0 && hours >= 12) {
 		return (
 			<div>
-				<div className="text-timer-orange">
+				<div suppressHydrationWarning className="text-timer-orange">
 					{days > 0 && `${days}d `}
 					{(days > 0 || hours > 0) && `${hours}h `}
 					{mins}m {secs}s
@@ -52,7 +49,7 @@ export default function Timer({ dueDate }: { dueDate: Date }) {
 	} else {
 		return (
 			<div>
-				<div className="text-text-inactive">
+				<div suppressHydrationWarning className="text-text-inactive">
 					{days > 0 && `${days}d `}
 					{(days > 0 || hours > 0) && `${hours}h `}
 					{mins}m {secs}s
