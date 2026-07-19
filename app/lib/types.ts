@@ -22,3 +22,12 @@ export enum Source {
 	CANVAS = "canvas",
 	GRADESCOPE = "gradescope",
 }
+
+export type SourceFilter = "all" | `${Source}`;
+
+export enum SortType {
+	DUE_DATE = "due_date",
+	NAME = "name",
+	COURSE = "course",
+	STATUS = "status",
+}

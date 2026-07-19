@@ -1,12 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { SortType } from "@/app/lib/types";
+import { Dispatch, SetStateAction, useState } from "react";
 
-const SORT_OPTIONS = ["Due date", "Name", "Course", "Status"];
+const SORT_OPTIONS: Record<string, string> = {
+	due_date: "Due date",
+	name: "Name",
+	course: "Course",
+	status: "Status",
+};
 
-export default function Sorter() {
+export default function Sorter({
+	onSortTypeChange,
+}: {
+	onSortTypeChange: Dispatch<SetStateAction<`${SortType}`>>;
+}) {
 	const [open, setOpen] = useState<boolean>(false);
-	const [selected, setSelected] = useState<string>(SORT_OPTIONS[0]);
+	const [selected, setSelected] = useState<string>(SORT_OPTIONS["due_date"]);
 
 	return (
 		<div className="relative">
@@ -28,16 +38,17 @@ export default function Sorter() {
 						Sort by: {selected}
 					</button>
 					<ul>
-						{SORT_OPTIONS.map((option) => (
+						{Object.keys(SORT_OPTIONS).map((option) => (
 							<li
 								key={option}
 								onClick={() => {
-									setSelected(option);
+									setSelected(SORT_OPTIONS[option]);
+									onSortTypeChange(option as SortType);
 									setOpen(false);
 								}}
 								className="cursor-pointer px-2 py-1 rounded-xl hover:bg-white text-text-inactive hover:text-black hover:shadow-lg"
 							>
-								{option}
+								{SORT_OPTIONS[option]}
 							</li>
 						))}
 					</ul>

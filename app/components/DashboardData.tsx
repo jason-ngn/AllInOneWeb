@@ -36,7 +36,7 @@ export default async function DashboardData() {
 				});
 
 			for (const a of assignments) {
-				//if (a.graded_submissions_exist) continue;
+				if (a.graded_submissions_exist) continue;
 				c.assignments.push({
 					id: a.id,
 					pointsPossible: a.points_possible,
