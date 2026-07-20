@@ -8,11 +8,14 @@ export async function GET(
 	{ params }: { params: Promise<{ courseId: string }> },
 ) {
 	const { courseId } = await params;
-	const res = await fetch(`${BASE}/courses/${courseId}/assignments`, {
-		headers: {
-			Authorization: `Bearer ${TOKEN}`,
+	const res = await fetch(
+		`${BASE}/courses/${courseId}/assignments?include[]=submission`,
+		{
+			headers: {
+				Authorization: `Bearer ${TOKEN}`,
+			},
 		},
-	});
+	);
 	if (!res.ok)
 		return new Response("Canvas error", {
 			status: res.status,

@@ -15,39 +15,62 @@ function isToday(date: Date) {
 }
 
 export default function SidePanel({
-	items,
+	canvasItems,
+	gradescopeItems,
 	canvasOk = true,
 	gradescopeOk = true,
 	activeFilter,
 	onFilterChange,
+	manuallyCompleted,
 }: {
-	items: CourseItem[];
+	canvasItems: CourseItem[];
+	gradescopeItems: CourseItem[];
 	canvasOk: boolean;
 	gradescopeOk: boolean;
 	activeFilter: string;
 	onFilterChange: (filter: string) => void;
+	manuallyCompleted: Set<string>;
 }) {
-	const all = items.flatMap((c) => c.assignments);
+	const canvasAll = canvasItems.flatMap((c) => c.assignments);
+	const gradescopeAll = gradescopeItems.flatMap((g) => g.assignments);
+	const all = canvasAll.concat(gradescopeAll);
 	const counts = {
 		all: all.length,
 		today: all.filter((a) => isToday(a.dueAt)).length,
 		upcoming: all.filter((a) => a.dueAt > new Date() && !isToday(a.dueAt))
 			.length,
-		completed: all.filter((a) => a.submitted || a.graded).length,
+		completed: all.filter(
+			(a) => a.submitted || a.graded || manuallyCompleted.has(a.id),
+		).length,
+		overdue: all.filter(
+			(a) => a.dueAt < new Date() && !a.submitted && !a.graded,
+		).length,
 	};
 
-	const courseList: {
+	const canvasCourseList: {
 		name: string;
 		numOfAssignments: number;
-	}[] = items.map((item) => {
+	}[] = canvasItems.map((item) => {
 		return {
 			name: item.name,
 			numOfAssignments: item.assignments.length,
 		};
 	});
 
+	const gradescopeCourseList: {
+		name: string;
+		numOfAssignments: number;
+	}[] = gradescopeItems.map((item) => {
+		return {
+			name: item.name,
+			numOfAssignments: item.assignments.length,
+		};
+	});
+
+	const courseList = canvasCourseList.concat(gradescopeCourseList);
+
 	return (
-		<div className="p-6 h-screen bg-side-panel flex flex-col gap-4">
+		<div className="p-6 min-h-full bg-side-panel flex flex-col gap-4">
 			<Logo />
 			<AssignmentsViewList
 				counts={counts}

@@ -5,10 +5,14 @@ export default function Class({
 	courseCode,
 	name,
 	assignments,
+	manuallyCompleted,
+	onToggleComplete,
 }: {
 	courseCode: string;
 	name: string;
 	assignments: AssignmentType[];
+	manuallyCompleted: Set<string>;
+	onToggleComplete: (id: string) => void;
 }) {
 	return (
 		<div>
@@ -17,7 +21,9 @@ export default function Class({
 					<div className="font-semibold text-xl">{courseCode}</div>
 					<div className="text-text-inactive">{name}</div>
 				</div>
-				<div className="text-text-inactive">{assignments.length} to do</div>
+				<div className="text-text-inactive">
+					{assignments.filter((a) => !(a.submitted || a.graded)).length} to do
+				</div>
 			</div>
 
 			{assignments.length ? (
@@ -25,6 +31,7 @@ export default function Class({
 					return (
 						<div key={i} className="px-2 py-6">
 							<Assignment
+								id={a.id}
 								name={a.name}
 								maxScore={a.pointsPossible}
 								dueDate={a.dueAt}
@@ -32,6 +39,8 @@ export default function Class({
 								submitted={a.submitted}
 								graded={a.graded}
 								source={a.source}
+								manuallyCompleted={manuallyCompleted}
+								onToggleComplete={onToggleComplete}
 							/>
 						</div>
 					);

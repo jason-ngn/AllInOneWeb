@@ -11,17 +11,21 @@ export default function CourseList({
 	return (
 		<div>
 			<div className="pb-3 text-text-inactive font-bold">Courses</div>
-			<div className="flex flex-col justify-center items-center">
-				{items.map((item, i) => {
-					return (
-						<CourseListItem
-							name={item.name}
-							numOfAssignments={item.numOfAssignments}
-							key={i}
-						/>
-					);
-				})}
-			</div>
+			{items.length ? (
+				<div className="flex flex-col justify-center items-center">
+					{items.map((item, i) => {
+						return (
+							<CourseListItem
+								name={item.name}
+								numOfAssignments={item.numOfAssignments}
+								key={i}
+							/>
+						);
+					})}
+				</div>
+			) : (
+				<div className="text-text-inactive">No courses available</div>
+			)}
 		</div>
 	);
 }

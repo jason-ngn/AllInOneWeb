@@ -4,7 +4,7 @@ import AssignmentsViewerTitle from "@/components/AssignmentsViewer/AssignmentsVi
 import AssignmentsViewerToolbar from "@/components/AssignmentsViewer/AssignmentsViewerToolbar";
 import Class from "@/components/Class/Class";
 import { CourseItem, SortType, SourceFilter } from "@/app/lib/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function isToday(date: Date) {
 	const now = new Date();
@@ -17,25 +17,34 @@ function isToday(date: Date) {
 
 export default function AssignmentsViewer({
 	title,
-	items,
+	canvasItems,
+	gradescopeItems,
 	filter,
+	manuallyCompleted,
+	onToggleComplete,
 }: {
 	title: string;
-	items: CourseItem[];
+	canvasItems: CourseItem[];
+	gradescopeItems: CourseItem[];
 	filter: string;
+	manuallyCompleted: Set<string>;
+	onToggleComplete: (id: string) => void;
 }) {
 	const [query, setQuery] = useState("");
 	const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
 	const [sortType, setSortType] = useState<`${SortType}`>("due_date");
 
 	const now = new Date();
-	const filtered = items.map((c) => ({
+	const filtered = canvasItems.concat(gradescopeItems).map((c) => ({
 		...c,
 		assignments: c.assignments
 			.filter((a) => {
 				if (filter === "today") return isToday(a.dueAt);
 				if (filter === "upcoming") return a.dueAt > now && !isToday(a.dueAt);
-				if (filter === "completed") return a.submitted || a.graded;
+				if (filter === "completed")
+					return a.submitted || a.graded || manuallyCompleted.has(a.id);
+				if (filter === "overdue")
+					return a.dueAt < now && !a.submitted && !a.graded;
 				return true;
 			})
 			.filter((a) =>
@@ -79,7 +88,7 @@ export default function AssignmentsViewer({
 			<AssignmentsViewerTitle
 				title={title}
 				numOfAssignments={numOfAssignments}
-				numOfCourses={items.length}
+				numOfCourses={canvasItems.concat(gradescopeItems).length}
 			/>
 			<LineBreak />
 			<AssignmentsViewerToolbar
@@ -87,17 +96,23 @@ export default function AssignmentsViewer({
 				onSourceFilterChange={setSourceFilter}
 				onSortTypeChange={setSortType}
 			/>
-			{filtered.map((c, i) => {
-				return (
-					<div key={i}>
-						<Class
-							courseCode={c.courseCode}
-							name={c.name}
-							assignments={c.assignments}
-						/>
-					</div>
-				);
-			})}
+			{filtered.length ? (
+				filtered.map((c, i) => {
+					return (
+						<div key={i}>
+							<Class
+								courseCode={c.courseCode}
+								name={c.name}
+								assignments={c.assignments}
+								manuallyCompleted={manuallyCompleted}
+								onToggleComplete={onToggleComplete}
+							/>
+						</div>
+					);
+				})
+			) : (
+				<div className="text-text-inactive py-2">No courses available</div>
+			)}
 		</div>
 	);
 }

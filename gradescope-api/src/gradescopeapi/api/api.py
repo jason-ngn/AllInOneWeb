@@ -113,10 +113,12 @@ def get_courses():
     Raises:
         HTTPException: If the request to get courses fails, with a 500 Internal Server Error status code and the error message.
     """
+    if account is None:
+        raise HTTPException(status_code=401, detail="Not logged in")
     try:
         course_list = account.get_courses()
         return course_list
-    except RuntimeError as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 

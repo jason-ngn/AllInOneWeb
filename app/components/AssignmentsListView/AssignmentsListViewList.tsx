@@ -6,6 +6,7 @@ type Counts = {
 	today: number;
 	upcoming: number;
 	completed: number;
+	overdue: number;
 };
 
 export default function AssignmentsViewList({
@@ -22,13 +23,14 @@ export default function AssignmentsViewList({
 		{ name: "Today", key: "today", numOfAssignments: counts.today },
 		{ name: "Upcoming", key: "upcoming", numOfAssignments: counts.upcoming },
 		{ name: "Completed", key: "completed", numOfAssignments: counts.completed },
+		{ name: "Overdue", key: "overdue", numOfAssignments: counts.overdue },
 	];
 
 	return (
 		<div className="flex flex-col gap-1 justify-center items-center">
 			{items.map((item, i) => (
 				<AssignmentsViewItem
-					key={item.name}
+				key={item.name}
 					name={item.name}
 					numOfAssignments={item.numOfAssignments}
 					active={activeFilter === item.key}

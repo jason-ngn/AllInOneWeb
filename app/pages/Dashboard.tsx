@@ -1,10 +1,5 @@
-import DashboardData, { DashboardSkeleton } from "@/components/DashboardData";
-import { Suspense } from "react";
+import DashboardClient from "@/components/DashboardClient";
 
 export default function Dashboard() {
-	return (
-		<Suspense fallback={<DashboardSkeleton />}>
-			<DashboardData />
-		</Suspense>
-	);
+	return <DashboardClient />;
 }
