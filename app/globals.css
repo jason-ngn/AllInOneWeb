@@ -31,6 +31,8 @@
 	--color-missing-tag-fill: #C0392B;
 	--color-timer-orange: #C9821B;
 	--color-timer-red: #D5443B;
+	--color-404-bg: #FBF1E2;
+	--color-404-fill: #C9821B;
 }
 
 @media (prefers-color-scheme: dark) {
