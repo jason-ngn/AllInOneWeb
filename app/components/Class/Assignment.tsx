@@ -10,7 +10,6 @@ import GradedTag from "@/components/Class/GradedTag";
 import Timer from "@/components/Class/Timer";
 import ExternalLink from "@/components/Class/ExternalLink";
 import { Source } from "@/app/lib/types";
-import { useState } from "react";
 
 export default function Assignment({
 	id,

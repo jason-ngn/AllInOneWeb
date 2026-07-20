@@ -4,7 +4,7 @@ import AssignmentsViewerTitle from "@/components/AssignmentsViewer/AssignmentsVi
 import AssignmentsViewerToolbar from "@/components/AssignmentsViewer/AssignmentsViewerToolbar";
 import Class from "@/components/Class/Class";
 import { CourseItem, SortType, SourceFilter } from "@/app/lib/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function isToday(date: Date) {
 	const now = new Date();

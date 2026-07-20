@@ -5,14 +5,14 @@ import SidePanel from "@/components/SidePanel";
 import AssignmentsViewer from "@/app/components/AssignmentsViewer/AssignmentsViewer";
 import { fetchDashboardData } from "@/lib/api";
 
-const CACHE_KEY = "dashboard_cache";
+//const CACHE_KEY = "dashboard_cache";
 
-function hydrateDates(items: CourseItem[]) {
-	return items.map((c) => ({
-		...c,
-		assignments: c.assignments.map((a) => ({ ...a, dueAt: new Date(a.dueAt) })),
-	}));
-}
+//function hydrateDates(items: CourseItem[]) {
+//	return items.map((c) => ({
+//		...c,
+//		assignments: c.assignments.map((a) => ({ ...a, dueAt: new Date(a.dueAt) })),
+//	}));
+//}
 
 type Filter = "all" | "today" | "upcoming" | "completed" | "overdue";
 

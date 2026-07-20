@@ -1,9 +1,7 @@
-import { type NextRequest } from "next/server";
-
 const BASE = process.env.CANVAS_BASE_URL;
 const TOKEN = process.env.CANVAS_ACCESS_TOKEN;
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
 	const res = await fetch(`${BASE}/courses?include[]=course_progress`, {
 		headers: { Authorization: `Bearer ${TOKEN}` },
 	});
