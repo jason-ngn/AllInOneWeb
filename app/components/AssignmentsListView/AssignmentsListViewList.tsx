@@ -28,9 +28,9 @@ export default function AssignmentsViewList({
 
 	return (
 		<div className="flex flex-col gap-1 justify-center items-center">
-			{items.map((item, i) => (
+			{items.map((item) => (
 				<AssignmentsViewItem
-				key={item.name}
+					key={item.name}
 					name={item.name}
 					numOfAssignments={item.numOfAssignments}
 					active={activeFilter === item.key}

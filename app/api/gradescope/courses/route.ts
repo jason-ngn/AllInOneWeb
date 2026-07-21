@@ -1,8 +1,6 @@
-import { type NextRequest } from "next/server";
-
 const BASE = process.env.GRADESCOPE_BASE_URL;
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
 	const res = await fetch(`${BASE}/courses`, {
 		method: "POST",
 	});
