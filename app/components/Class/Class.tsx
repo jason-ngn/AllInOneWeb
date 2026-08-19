@@ -31,7 +31,7 @@ export default function Class({
 					return (
 						<div key={i} className="px-2 py-6">
 							<Assignment
-								id={a.id}
+								id={String(a.id)}
 								name={a.name}
 								maxScore={a.pointsPossible}
 								dueDate={a.dueAt}

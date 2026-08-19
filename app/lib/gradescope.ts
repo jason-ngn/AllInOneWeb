@@ -41,24 +41,3 @@ export async function getGradescopeAssignments(courseId: string) {
 	if (!res.ok) throw new Error(`Gradescope assignments failed: ${res.status}`);
 	return res.json();
 }
-
-export function gradescopeSemesterComparator(semester: string, year: string) {
-	const currentDate = new Date();
-	const currentYear = currentDate.getFullYear().toString();
-	const currentMonth = currentDate.getMonth() + 1;
-	if (year !== currentYear) return false;
-
-	if (semester === "Fall") {
-		if (currentMonth >= 10 && currentMonth <= 12) return true;
-		else return false;
-	} else if (semester === "Winter") {
-		if (currentMonth >= 1 && currentMonth <= 3) return true;
-		else return false;
-	} else if (semester === "Spring") {
-		if (currentMonth >= 4 && currentMonth <= 6) return true;
-		else return false;
-	} else if (semester === "Fall") {
-		if (currentMonth >= 7 && currentMonth <= 8) return true;
-		else return false;
-	} else return true;
-}

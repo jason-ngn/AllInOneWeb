@@ -1,8 +1,8 @@
 export type AssignmentType = {
-	id: string;
+	id: number;
 	name: string;
 	pointsPossible: number;
-	dueAt: Date;
+	dueAt: Date | null;
 	status: string;
 	htmlUrl: string;
 	graded: boolean;
