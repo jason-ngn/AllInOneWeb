@@ -6,7 +6,8 @@ import Class from "@/components/Class/Class";
 import { CourseItem, SortType, SourceFilter } from "@/app/lib/types";
 import { useState } from "react";
 
-function isToday(date: Date) {
+function isToday(date: Date | null) {
+	if (date === null) return false;
 	const now = new Date();
 	return (
 		date.getFullYear() === now.getFullYear() &&
@@ -40,11 +41,14 @@ export default function AssignmentsViewer({
 		assignments: c.assignments
 			.filter((a) => {
 				if (filter === "today") return isToday(a.dueAt);
-				if (filter === "upcoming") return a.dueAt > now && !isToday(a.dueAt);
+				if (filter === "upcoming")
+					return a.dueAt !== null && a.dueAt > now && !isToday(a.dueAt);
 				if (filter === "completed")
-					return a.submitted || a.graded || manuallyCompleted.has(a.id);
+					return (
+						a.submitted || a.graded || manuallyCompleted.has(String(a.id))
+					);
 				if (filter === "overdue")
-					return a.dueAt < now && !a.submitted && !a.graded;
+					return a.dueAt !== null && a.dueAt < now && !a.submitted && !a.graded;
 				return true;
 			})
 			.filter((a) =>
@@ -67,15 +71,18 @@ export default function AssignmentsViewer({
 					const priority = (x: {
 						graded: boolean;
 						submitted: boolean;
-						dueAt: Date;
+						dueAt: Date | null;
 					}) => {
 						if (x.graded) return 3;
 						if (x.submitted) return 2;
-						if (x.dueAt < now) return 0; // overdue, not yet submitted
-						return 1; // unsubmitted, not yet due
+						if (x.dueAt !== null && x.dueAt < now) return 0; // overdue, not yet submitted
+						return 1; // unsubmitted, not yet due (or no due date)
 					};
 					return priority(a) - priority(b);
 				}
+				if (a.dueAt === null && b.dueAt === null) return 0;
+				if (a.dueAt === null) return 1; // no due date sorts last
+				if (b.dueAt === null) return -1;
 				return b.dueAt.getTime() - a.dueAt.getTime();
 			}),
 	}));

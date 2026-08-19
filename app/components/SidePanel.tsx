@@ -5,7 +5,8 @@ import LineBreak from "@/components/LineBreak";
 import Status from "@/components/Status";
 import { CourseItem } from "@/lib/types";
 
-function isToday(date: Date) {
+function isToday(date: Date | null) {
+	if (date === null) return false;
 	const now = new Date();
 	return (
 		date.getFullYear() === now.getFullYear() &&
@@ -37,13 +38,14 @@ export default function SidePanel({
 	const counts = {
 		all: all.length,
 		today: all.filter((a) => isToday(a.dueAt)).length,
-		upcoming: all.filter((a) => a.dueAt > new Date() && !isToday(a.dueAt))
-			.length,
+		upcoming: all.filter(
+			(a) => a.dueAt !== null && a.dueAt > new Date() && !isToday(a.dueAt),
+		).length,
 		completed: all.filter(
-			(a) => a.submitted || a.graded || manuallyCompleted.has(a.id),
+			(a) => a.submitted || a.graded || manuallyCompleted.has(String(a.id)),
 		).length,
 		overdue: all.filter(
-			(a) => a.dueAt < new Date() && !a.submitted && !a.graded,
+			(a) => a.dueAt !== null && a.dueAt < new Date() && !a.submitted && !a.graded,
 		).length,
 	};
 
