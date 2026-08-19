@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
 	title: "All In One",
-	description: "A unified student dashboard for tracking assignments across all your courses. See due dates at a glance with live countdown timers, filter and sort by course, and monitor submission status from Canvas and Gradescope in one place.",
+	description:
+		"A unified student dashboard for tracking assignments across all your courses. See due dates at a glance with live countdown timers, filter and sort by course, and monitor submission status from Canvas and Gradescope in one place.",
 };
 
 export default function RootLayout({
@@ -31,8 +30,6 @@ export default function RootLayout({
 		>
 			<body suppressHydrationWarning className="min-h-full flex flex-col">
 				{children}
-				<SpeedInsights />
-				<Analytics />
 			</body>
 		</html>
 	);

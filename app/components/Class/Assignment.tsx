@@ -26,7 +26,7 @@ export default function Assignment({
 	id: string;
 	name: string;
 	maxScore: number;
-	dueDate: Date;
+	dueDate: Date | null;
 	link: string;
 	source?: `${Source}`;
 	submitted?: boolean;
@@ -60,7 +60,7 @@ export default function Assignment({
 									<GradedTag />
 								) : submitted ? (
 									<SubmittedTag />
-								) : new Date() > dueDate ? (
+								) : dueDate !== null && new Date() > dueDate ? (
 									<MissingTag />
 								) : (
 									<TodoTag />
@@ -70,9 +70,12 @@ export default function Assignment({
 					</div>
 				</div>
 				<div className="flex gap-2 justify-center items-center">
-					{!(submitted || graded || manuallyCompleted.has(id)) && (
-						<Timer dueDate={dueDate} />
-					)}
+					{!(submitted || graded || manuallyCompleted.has(id)) &&
+						(dueDate !== null ? (
+							<Timer dueDate={dueDate} />
+						) : (
+							<div className="text-text-inactive">No due date</div>
+						))}
 					<div>
 						<ExternalLink link={link} />
 					</div>
