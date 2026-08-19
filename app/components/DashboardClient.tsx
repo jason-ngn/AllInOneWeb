@@ -5,14 +5,14 @@ import SidePanel from "@/components/SidePanel";
 import AssignmentsViewer from "@/app/components/AssignmentsViewer/AssignmentsViewer";
 import { fetchDashboardData } from "@/lib/api";
 
-//const CACHE_KEY = "dashboard_cache";
+const CACHE_KEY = "dashboard_cache";
 
-//function hydrateDates(items: CourseItem[]) {
-//	return items.map((c) => ({
-//		...c,
-//		assignments: c.assignments.map((a) => ({ ...a, dueAt: new Date(a.dueAt) })),
-//	}));
-//}
+function hydrateDates(items: CourseItem[]) {
+	return items.map((c) => ({
+		...c,
+		assignments: c.assignments.map((a) => ({ ...a, dueAt: new Date(a.dueAt) })),
+	}));
+}
 
 type Filter = "all" | "today" | "upcoming" | "completed" | "overdue";
 
@@ -66,17 +66,17 @@ export default function DashboardClient() {
 
 	useEffect(() => {
 		async function load() {
-			//try {
-			//	const raw = localStorage.getItem(CACHE_KEY);
-			//	if (raw) {
-			//		const { canvasItems, gradescopeItems } = JSON.parse(raw);
-			//		setCanvasItems(hydrateDates(canvasItems));
-			//		setGradescopeItems(hydrateDates(gradescopeItems));
-			//		setCanvasOk(true);
-			//		setGradescopeOk(true);
-			//		setLoading(false);
-			//	}
-			//} catch {}
+			try {
+				const raw = localStorage.getItem(CACHE_KEY);
+				if (raw) {
+					const { canvasItems, gradescopeItems } = JSON.parse(raw);
+					setCanvasItems(hydrateDates(canvasItems));
+					setGradescopeItems(hydrateDates(gradescopeItems));
+					setCanvasOk(true);
+					setGradescopeOk(true);
+					setLoading(false);
+				}
+			} catch {}
 
 			const data = await fetchDashboardData();
 			setCanvasItems(data.canvasItems);
@@ -85,14 +85,14 @@ export default function DashboardClient() {
 			setGradescopeOk(data.gradescopeOk);
 			setLoading(false);
 
-			//localStorage.setItem(
-			//	CACHE_KEY,
-			//	JSON.stringify({
-			//		canvasItems: data.canvasItems,
-			//		gradescopeItems: data.gradescopeItems,
-			//		ts: Date.now(),
-			//	}),
-			//);
+			localStorage.setItem(
+				CACHE_KEY,
+				JSON.stringify({
+					canvasItems: data.canvasItems,
+					gradescopeItems: data.gradescopeItems,
+					ts: Date.now(),
+				}),
+			);
 		}
 
 		load();
