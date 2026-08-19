@@ -66,17 +66,17 @@ export default function DashboardClient() {
 
 	useEffect(() => {
 		async function load() {
-			try {
-				const raw = localStorage.getItem(CACHE_KEY);
-				if (raw) {
-					const { canvasItems, gradescopeItems } = JSON.parse(raw);
-					setCanvasItems(hydrateDates(canvasItems));
-					setGradescopeItems(hydrateDates(gradescopeItems));
-					setCanvasOk(true);
-					setGradescopeOk(true);
-					setLoading(false);
-				}
-			} catch {}
+			//try {
+			//	const raw = localStorage.getItem(CACHE_KEY);
+			//	if (raw) {
+			//		const { canvasItems, gradescopeItems } = JSON.parse(raw);
+			//		setCanvasItems(hydrateDates(canvasItems));
+			//		setGradescopeItems(hydrateDates(gradescopeItems));
+			//		setCanvasOk(true);
+			//		setGradescopeOk(true);
+			//		setLoading(false);
+			//	}
+			//} catch {}
 
 			const data = await fetchDashboardData();
 			setCanvasItems(data.canvasItems);
