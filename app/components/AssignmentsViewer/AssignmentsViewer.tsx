@@ -83,7 +83,7 @@ export default function AssignmentsViewer({
 				if (a.dueAt === null && b.dueAt === null) return 0;
 				if (a.dueAt === null) return 1; // no due date sorts last
 				if (b.dueAt === null) return -1;
-				return b.dueAt.getTime() - a.dueAt.getTime();
+				return a.dueAt.getTime() - b.dueAt.getTime();
 			}),
 	}));
 	const numOfAssignments: number = filtered.reduce((prev, curr) => {
