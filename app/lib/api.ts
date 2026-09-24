@@ -167,7 +167,7 @@ export async function fetchDashboardData() {
 						htmlUrl: a.url,
 						graded: a.status === "graded",
 						submitted: a.status === "submitted",
-						source: "canvas",
+						source: "gradescope",
 					});
 				}
 			}),

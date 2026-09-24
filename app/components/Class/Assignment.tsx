@@ -54,7 +54,7 @@ export default function Assignment({
 						<div className="font-semibold">{name}</div>
 						<div className="flex justify-center items-center gap-2">
 							{source === Source.CANVAS ? <CanvasTag /> : <GradescopeTag />}
-							<div className="text-text-inactive">{maxScore} pts</div>
+							<div className="text-text-inactive">{maxScore ?? "No"} pts</div>
 							<div>
 								{graded ? (
 									<GradedTag />
