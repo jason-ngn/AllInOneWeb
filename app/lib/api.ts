@@ -78,6 +78,7 @@ export async function fetchDashboardData() {
 				if (assignments?.status === 200) {
 					for (const a of assignments.data) {
 						if (a.status === "graded") continue;
+						if (!a.dueDate) continue;
 						const dueDate = new Date(a.dueDate ?? "");
 						const today = new Date();
 
@@ -151,6 +152,7 @@ export async function fetchDashboardData() {
 
 				for (const a of assignments) {
 					if (!a.url) continue;
+					if (!a.dueDate) continue;
 					if (a.status === "graded") continue;
 					const dueDate = new Date(a.dueDate ?? "");
 					const today = new Date();
