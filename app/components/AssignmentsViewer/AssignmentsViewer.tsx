@@ -44,9 +44,7 @@ export default function AssignmentsViewer({
 				if (filter === "upcoming")
 					return a.dueAt !== null && a.dueAt > now && !isToday(a.dueAt);
 				if (filter === "completed")
-					return (
-						a.submitted || a.graded || manuallyCompleted.has(String(a.id))
-					);
+					return a.submitted || a.graded || manuallyCompleted.has(String(a.id));
 				if (filter === "overdue")
 					return a.dueAt !== null && a.dueAt < now && !a.submitted && !a.graded;
 				return true;
@@ -105,17 +103,19 @@ export default function AssignmentsViewer({
 			/>
 			{filtered.length ? (
 				filtered.map((c, i) => {
-					return (
-						<div key={i}>
-							<Class
-								courseCode={c.courseCode}
-								name={c.name}
-								assignments={c.assignments}
-								manuallyCompleted={manuallyCompleted}
-								onToggleComplete={onToggleComplete}
-							/>
-						</div>
-					);
+					if (c.assignments.length) {
+						return (
+							<div key={i}>
+								<Class
+									courseCode={c.courseCode}
+									name={c.name}
+									assignments={c.assignments}
+									manuallyCompleted={manuallyCompleted}
+									onToggleComplete={onToggleComplete}
+								/>
+							</div>
+						);
+					}
 				})
 			) : (
 				<div className="text-text-inactive py-2">No courses available</div>
