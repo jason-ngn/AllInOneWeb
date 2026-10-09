@@ -39,10 +39,16 @@ interface GradescopeAssignmentRaw {
 }
 
 export async function fetchDashboardData() {
-	const canvasItems: CourseItem[] = [];
-	const gradescopeItems: CourseItem[] = [];
+	// Canvas and Gradescope are independent, so fetch them concurrently
+	const [{ canvasItems, canvasOk }, { gradescopeItems, gradescopeOk }] =
+		await Promise.all([fetchCanvas(), fetchGradescope()]);
 
-	// Canvas
+	return { canvasItems, gradescopeItems, canvasOk, gradescopeOk };
+}
+
+async function fetchCanvas() {
+	const canvasItems: CourseItem[] = [];
+
 	let canvasCourses;
 	try {
 		canvasCourses = await axios.get<CanvasCourseRaw[]>(
@@ -52,7 +58,9 @@ export async function fetchDashboardData() {
 		canvasCourses = null;
 	}
 
-	if (canvasCourses && canvasCourses.status === 200) {
+	const canvasOk = canvasCourses?.status === 200;
+
+	if (canvasCourses && canvasOk) {
 		for (const course of canvasCourses.data) {
 			if (course.name === "Analytical_Writing_Placement_Exam") continue;
 			canvasItems.push({
@@ -102,7 +110,11 @@ export async function fetchDashboardData() {
 		);
 	}
 
-	// Gradescope
+	return { canvasItems, canvasOk };
+}
+
+async function fetchGradescope() {
+	const gradescopeItems: CourseItem[] = [];
 	let gradescopeOk = false;
 	let loginRes;
 	try {
@@ -181,10 +193,5 @@ export async function fetchDashboardData() {
 		console.log(e);
 	});
 
-	return {
-		canvasItems,
-		gradescopeItems,
-		canvasOk: canvasItems ? true : false,
-		gradescopeOk,
-	};
+	return { gradescopeItems, gradescopeOk };
 }
