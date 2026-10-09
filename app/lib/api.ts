@@ -4,9 +4,6 @@ import axios from "axios";
 export const baseUrl =
 	process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api";
 
-const email = process.env.NEXT_PUBLIC_GRADESCOPE_EMAIL;
-const password = process.env.NEXT_PUBLIC_GRADESCOPE_PASSWORD;
-
 interface CanvasCourseRaw {
 	id: number;
 	fullName: string;
@@ -118,10 +115,7 @@ async function fetchGradescope() {
 	let gradescopeOk = false;
 	let loginRes;
 	try {
-		loginRes = await axios.post(`${baseUrl}/gradescope/login`, {
-			email,
-			password,
-		});
+		loginRes = await axios.post(`${baseUrl}/gradescope/login`);
 	} catch {
 		loginRes = null;
 	}
