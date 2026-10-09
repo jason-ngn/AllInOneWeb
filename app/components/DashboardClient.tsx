@@ -91,15 +91,26 @@ export default function DashboardClient() {
 			setLoading(false);
 		}
 
+		// Show cached data instantly, then refresh in the background
+		let last = readCache();
+		if (last) apply(last);
+
 		async function load() {
-			const data = await fetchDashboardData();
+			const fresh = await fetchDashboardData();
+			// If a source failed, keep its last good data instead of blanking it
+			const data: DashboardData = {
+				...fresh,
+				canvasItems:
+					fresh.canvasOk || !last ? fresh.canvasItems : last.canvasItems,
+				gradescopeItems:
+					fresh.gradescopeOk || !last
+						? fresh.gradescopeItems
+						: last.gradescopeItems,
+			};
+			last = data;
 			apply(data);
 			writeCache(data);
 		}
-
-		// Show cached data instantly, then refresh in the background
-		const cached = readCache();
-		if (cached) apply(cached);
 
 		load();
 
