@@ -112,78 +112,70 @@ async function fetchCanvas() {
 
 async function fetchGradescope() {
 	const gradescopeItems: CourseItem[] = [];
-	let gradescopeOk = false;
-	let loginRes;
+	let gradescopeOk = true;
+
+	// The server logs in on its own when it has no session
+	let courses: GradescopeCourseRaw[];
 	try {
-		loginRes = await axios.post(`${baseUrl}/gradescope/login`);
-	} catch {
-		loginRes = null;
-	}
-
-	if (loginRes?.status === 200) {
-		gradescopeOk = true;
-
-		let courses: GradescopeCourseRaw[];
-		try {
-			const res = await axios.post<GradescopeCourseRaw[]>(
-				`${baseUrl}/gradescope/courses`,
-			);
-			courses = res.data;
-		} catch {
-			courses = [];
-		}
-
-		for (const c of courses) {
-			gradescopeItems.push({
-				id: c.id,
-				name: c.fullName,
-				courseCode: c.name,
-				assignments: [],
-				source: "gradescope",
-			});
-		}
-
-		await Promise.all(
-			gradescopeItems.map(async (c) => {
-				let assignments: GradescopeAssignmentRaw[];
-				try {
-					const res = await axios.post<GradescopeAssignmentRaw[]>(
-						`${baseUrl}/gradescope/assignments`,
-						{ courseId: c.id },
-					);
-					assignments = res.data;
-				} catch {
-					assignments = [];
-				}
-
-				for (const a of assignments) {
-					if (!a.url) continue;
-					if (!a.dueDate) continue;
-					if (a.status === "graded") continue;
-					const dueDate = new Date(a.dueDate ?? "");
-					const today = new Date();
-
-					if (a.status === "submitted" && (today > dueDate || !a.dueDate))
-						continue;
-
-					c.assignments.push({
-						id: a.id,
-						name: a.name,
-						pointsPossible: a.maxGrade,
-						dueAt: a.dueDate ? new Date(a.dueDate) : null,
-						status: a.status,
-						htmlUrl: a.url,
-						graded: a.status === "graded",
-						submitted: a.status === "submitted",
-						source: "gradescope",
-					});
-				}
-			}),
+		const res = await axios.post<GradescopeCourseRaw[]>(
+			`${baseUrl}/gradescope/courses`,
 		);
+		courses = res.data;
+	} catch {
+		courses = [];
+		gradescopeOk = false;
 	}
 
+	for (const c of courses) {
+		gradescopeItems.push({
+			id: c.id,
+			name: c.fullName,
+			courseCode: c.name,
+			assignments: [],
+			source: "gradescope",
+		});
+	}
+
+	await Promise.all(
+		gradescopeItems.map(async (c) => {
+			let assignments: GradescopeAssignmentRaw[];
+			try {
+				const res = await axios.post<GradescopeAssignmentRaw[]>(
+					`${baseUrl}/gradescope/assignments`,
+					{ courseId: c.id },
+				);
+				assignments = res.data;
+			} catch {
+				assignments = [];
+			}
+
+			for (const a of assignments) {
+				if (!a.url) continue;
+				if (!a.dueDate) continue;
+				if (a.status === "graded") continue;
+				const dueDate = new Date(a.dueDate ?? "");
+				const today = new Date();
+
+				if (a.status === "submitted" && (today > dueDate || !a.dueDate))
+					continue;
+
+				c.assignments.push({
+					id: a.id,
+					name: a.name,
+					pointsPossible: a.maxGrade,
+					dueAt: a.dueDate ? new Date(a.dueDate) : null,
+					status: a.status,
+					htmlUrl: a.url,
+					graded: a.status === "graded",
+					submitted: a.status === "submitted",
+					source: "gradescope",
+				});
+			}
+		}),
+	);
+
+	// The data is already fetched, so a failed logout isn't a fetch failure
 	await axios.post(`${baseUrl}/gradescope/logout`).catch((e) => {
-		gradescopeOk = false;
 		console.log(e);
 	});
 
