@@ -35,7 +35,18 @@ interface GradescopeAssignmentRaw {
 	url: string;
 }
 
-export async function fetchDashboardData() {
+// The Gradescope server shares one session, so overlapping fetches clobber
+// each other; reuse the in-flight fetch instead of starting another
+let inFlight: ReturnType<typeof fetchAll> | null = null;
+
+export function fetchDashboardData() {
+	inFlight ??= fetchAll().finally(() => {
+		inFlight = null;
+	});
+	return inFlight;
+}
+
+async function fetchAll() {
 	// Canvas and Gradescope are independent, so fetch them concurrently
 	const [{ canvasItems, canvasOk }, { gradescopeItems, gradescopeOk }] =
 		await Promise.all([fetchCanvas(), fetchGradescope()]);
@@ -115,12 +126,18 @@ async function fetchGradescope() {
 	let gradescopeOk = true;
 
 	// The server logs in on its own when it has no session
-	let courses: GradescopeCourseRaw[];
+	let courses: GradescopeCourseRaw[] = [];
 	try {
-		const res = await axios.post<GradescopeCourseRaw[]>(
-			`${baseUrl}/gradescope/courses`,
-		);
-		courses = res.data;
+		// A clobbered session comes back as 200 with [], so retry a few times;
+		// if it's still empty after that, there really are no courses
+		for (let attempt = 0; attempt < 3; attempt++) {
+			if (attempt > 0) await new Promise((r) => setTimeout(r, 1500));
+			const res = await axios.post<GradescopeCourseRaw[]>(
+				`${baseUrl}/gradescope/courses`,
+			);
+			courses = res.data;
+			if (courses.length > 0) break;
+		}
 	} catch {
 		courses = [];
 		gradescopeOk = false;
