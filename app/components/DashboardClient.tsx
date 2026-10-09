@@ -7,6 +7,33 @@ import { fetchDashboardData } from "@/lib/api";
 
 type Filter = "all" | "today" | "upcoming" | "completed" | "overdue";
 
+type DashboardData = Awaited<ReturnType<typeof fetchDashboardData>>;
+
+const CACHE_KEY = "dashboard-cache-v1";
+
+function readCache(): DashboardData | null {
+	try {
+		const raw = localStorage.getItem(CACHE_KEY);
+		if (!raw) return null;
+		const data = JSON.parse(raw) as DashboardData;
+		// JSON turns Dates into strings; restore them
+		for (const course of [...data.canvasItems, ...data.gradescopeItems]) {
+			for (const a of course.assignments) {
+				a.dueAt = a.dueAt ? new Date(a.dueAt) : null;
+			}
+		}
+		return data;
+	} catch {
+		return null;
+	}
+}
+
+function writeCache(data: DashboardData) {
+	try {
+		localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+	} catch {}
+}
+
 function DashboardSkeleton() {
 	return (
 		<div className="flex flex-row h-screen bg-white animate-pulse">
@@ -56,14 +83,23 @@ export default function DashboardClient() {
 	};
 
 	useEffect(() => {
-		async function load() {
-			const data = await fetchDashboardData();
+		function apply(data: DashboardData) {
 			setCanvasItems(data.canvasItems);
 			setGradescopeItems(data.gradescopeItems);
 			setCanvasOk(data.canvasOk);
 			setGradescopeOk(data.gradescopeOk);
 			setLoading(false);
 		}
+
+		async function load() {
+			const data = await fetchDashboardData();
+			apply(data);
+			writeCache(data);
+		}
+
+		// Show cached data instantly, then refresh in the background
+		const cached = readCache();
+		if (cached) apply(cached);
 
 		load();
 
