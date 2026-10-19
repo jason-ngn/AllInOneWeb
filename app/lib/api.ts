@@ -55,7 +55,7 @@ async function fetchAll() {
 }
 
 async function fetchCanvas() {
-	const canvasItems: CourseItem[] = [];
+	let canvasItems: CourseItem[] = [];
 
 	let canvasCourses;
 	try {
@@ -118,11 +118,13 @@ async function fetchCanvas() {
 		);
 	}
 
+	canvasItems = canvasItems.filter((c) => c.assignments.length > 0);
+
 	return { canvasItems, canvasOk };
 }
 
 async function fetchGradescope() {
-	const gradescopeItems: CourseItem[] = [];
+	let gradescopeItems: CourseItem[] = [];
 	let gradescopeOk = true;
 
 	// The server logs in on its own when it has no session
@@ -195,6 +197,8 @@ async function fetchGradescope() {
 	await axios.post(`${baseUrl}/gradescope/logout`).catch((e) => {
 		console.log(e);
 	});
+
+	gradescopeItems = gradescopeItems.filter((g) => g.assignments.length > 0);
 
 	return { gradescopeItems, gradescopeOk };
 }
